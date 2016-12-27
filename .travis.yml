@@ -1,0 +1,12 @@
+sudo: true
+dist: trusty
+language: c
+before_install:
+  - sudo apt-get install -y libev-dev build-essential cpanminus perlmagick 
+  - wget http://nginx.org/download/nginx-1.11.7.tar.gz
+  - tar -zxf nginx-1.11.7.tar.gz
+script:
+  - (cd nginx-1.11.7 && ./configure --add-module=$(dirname $(pwd)) && make -j4 && sudo make install)
+  - sudo cpanm Test::Nginx
+  - (export PERL_MM_USE_DEFAULT=1 && git clone https://github.com/openresty/test-nginx.git && cd test-nginx && perl Makefile.PL && sudo make uninstall && sudo make install)
+  - make test

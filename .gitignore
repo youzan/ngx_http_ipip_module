@@ -1,0 +1,42 @@
+autoconf.err
+autotest
+objs
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+t/servroot
+
+fixtures/real_ip.datx
+fixtures/real_phone.txt
+scripts/ip.lock
+scripts/phone.lock
+scripts/var
