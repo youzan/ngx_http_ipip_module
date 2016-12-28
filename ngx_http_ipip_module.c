@@ -450,7 +450,9 @@ ngx_http_ipip_ip_lookup(ngx_http_ipip_ip_datx_t *datx, char *ip, u_char *result)
         return NGX_ERROR;
     }
 
-    if (sscanf(ip, "%d.%d.%d.%d", &ips[0], &ips[1], &ips[2], &ips[3]) != 4) {
+    if (sscanf(ip, "%u.%u.%u.%u", (unsigned int *)&ips[0], (unsigned int *)&ips[1],
+               (unsigned int *)&ips[2], (unsigned int *)&ips[3]) != 4)
+    {
         return NGX_ERROR;
     }
 
