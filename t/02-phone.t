@@ -4,7 +4,7 @@ my $workdir = $ENV{WORKDIR};
 
 our $http_config;
 
-if (-f '$workdir/fixtures/fake_ip.datx') {
+if (-f '$workdir/fixtures/real_ip.datx') {
     $http_config = <<"_EOC_";
         ipip_ip_datx '$workdir/fixtures/real_ip.datx';
         ipip_phone_txt '$workdir/fixtures/real_phone.txt';
