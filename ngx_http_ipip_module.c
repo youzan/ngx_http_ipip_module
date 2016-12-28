@@ -792,6 +792,7 @@ ngx_http_ipip_json_stringify(ngx_http_request_t *r, cJSON *root, u_char **buf, s
         goto ERROR;
     }
 
+    free(out);
     return NGX_OK;
 
 ERROR:
