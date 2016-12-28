@@ -34,7 +34,6 @@ if [[ "$iplock" != "$ipversion" ]]; then
 fi
 
 phoneversion=$(curl "http://user.ipip.net/download.php?a=version&token=$PHONETOKEN" 2>/dev/null)
-
 phonelock=$(cat "$phonelockfile")
 
 echo "compare phone version now:$phonelock future:$phoneversion"
@@ -47,7 +46,6 @@ if [[ "$phonelock" != "$phoneversion" ]]; then
         if make -C .. test; then
 
             if nginx -t; then
-
                 echo "ready reload nginx"
                 nginx -s reload
                 echo "$phoneversion" > "$phonelockfile"
