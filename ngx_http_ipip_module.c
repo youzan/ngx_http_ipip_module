@@ -59,9 +59,9 @@ static void *ngx_http_ipip_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_ipip_ip_datx(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 static char *ngx_http_ipip_phone_txt(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 static char *ngx_http_ipip_enable(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
-static ngx_int_t ngx_http_ipip_ip_lookup(ngx_http_ipip_ip_datx_t *datx, char *ip, u_char *result);
-static ngx_int_t
-ngx_http_ipip_phone_lookup(ngx_http_ipip_phone_txt_t *txt, u_char *phone, u_char *result);
+static ngx_int_t ngx_http_ipip_ip_lookup(ngx_http_ipip_ip_datx_t *datx, u_char *ip, u_char *result);
+static ngx_int_t ngx_http_ipip_phone_lookup(ngx_http_ipip_phone_txt_t *txt,
+                                            u_char *phone, u_char *result);
 static ngx_int_t ngx_http_ipip_handler(ngx_http_request_t *r);
 static ngx_int_t ngx_http_ipip_json_stringify(ngx_http_request_t *r,
                                     cJSON *root, u_char **buf, ssize_t *len);
@@ -441,17 +441,17 @@ ngx_http_ipip_phone_lookup(ngx_http_ipip_phone_txt_t *txt, u_char *phone, u_char
 
 
 static ngx_int_t
-ngx_http_ipip_ip_lookup(ngx_http_ipip_ip_datx_t *datx, char *ip, u_char *result)
+ngx_http_ipip_ip_lookup(ngx_http_ipip_ip_datx_t *datx, u_char *ip, u_char *result)
 {
-    ngx_uint_t ips[4];
+    u_char     ips[4];
     ngx_uint_t ip_prefix_value, ip2long_value, start, max_comp_len, index_offset, index_length;
 
     if (datx->addr == NULL) {
         return NGX_ERROR;
     }
 
-    if (sscanf(ip, "%u.%u.%u.%u", (unsigned int *)&ips[0], (unsigned int *)&ips[1],
-               (unsigned int *)&ips[2], (unsigned int *)&ips[3]) != 4)
+    if (sscanf((const char *)ip, "%hhu.%hhu.%hhu.%hhu", &ips[0], &ips[1],
+               &ips[2], &ips[3]) != 4)
     {
         return NGX_ERROR;
     }
@@ -567,7 +567,7 @@ ngx_http_ipip_ip_handler(ngx_http_request_t *r)
 
     */
 
-    rc = ngx_http_ipip_ip_lookup(&imcf->ip_datx, (char *)arg.data, result);
+    rc = ngx_http_ipip_ip_lookup(&imcf->ip_datx, arg.data, result);
     if (rc != NGX_OK) {
 
         buf = ngx_pcalloc(r->pool, sizeof(NGX_HTTP_IPIP_EMPTY_RESPONSE));
