@@ -578,6 +578,9 @@ ngx_http_ipip_ip_handler(ngx_http_request_t *r)
         ngx_memcpy(buf, NGX_HTTP_IPIP_EMPTY_RESPONSE, sizeof(NGX_HTTP_IPIP_EMPTY_RESPONSE));
 
     } else {
+        /*
+         * remember to free by cJSON_Delete
+         */
         root = cJSON_CreateObject();
         cJSON_AddStringToObject(root, "ret", "ok");
         cJSON_AddItemToObject(root, "data", data = cJSON_CreateArray());
@@ -589,6 +592,7 @@ ngx_http_ipip_ip_handler(ngx_http_request_t *r)
 
                 tmpbuf = ngx_pcalloc(r->pool, p - lastp);
                 if (tmpbuf == NULL) {
+                    cJSON_Delete(root);
                     return NGX_HTTP_INTERNAL_SERVER_ERROR;
                 }
 
@@ -602,6 +606,7 @@ ngx_http_ipip_ip_handler(ngx_http_request_t *r)
 
             tmpbuf = ngx_pcalloc(r->pool, p - lastp);
             if (tmpbuf == NULL) {
+                cJSON_Delete(root);
                 return NGX_HTTP_INTERNAL_SERVER_ERROR;
             }
 
@@ -609,7 +614,12 @@ ngx_http_ipip_ip_handler(ngx_http_request_t *r)
             cJSON_AddStringToObject(data, "dummy", (char *)tmpbuf);
         }
 
-        ngx_http_ipip_json_stringify(r, root, &buf, &len);
+        if (ngx_http_ipip_json_stringify(r, root, &buf, &len) != NGX_OK) {
+            cJSON_Delete(root);
+            return NGX_HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        cJSON_Delete(root);
     }
 
     r->headers_out.content_length_n = strlen((char *)buf);
@@ -699,6 +709,7 @@ ngx_http_ipip_phone_handler(ngx_http_request_t *r)
 
                 tmpbuf = ngx_pcalloc(r->pool, p - lastp);
                 if (tmpbuf == NULL) {
+                    cJSON_Delete(root);
                     return NGX_HTTP_INTERNAL_SERVER_ERROR;
                 }
 
@@ -712,6 +723,7 @@ ngx_http_ipip_phone_handler(ngx_http_request_t *r)
 
             tmpbuf = ngx_pcalloc(r->pool, p - lastp);
             if (tmpbuf == NULL) {
+                cJSON_Delete(root);
                 return NGX_HTTP_INTERNAL_SERVER_ERROR;
             }
 
@@ -719,7 +731,12 @@ ngx_http_ipip_phone_handler(ngx_http_request_t *r)
             cJSON_AddStringToObject(data, "dummy", (char *)tmpbuf);
         }
 
-        ngx_http_ipip_json_stringify(r, root, &buf, &len);
+        if (ngx_http_ipip_json_stringify(r, root, &buf, &len) != NGX_OK) {
+            cJSON_Delete(root);
+            return NGX_HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        cJSON_Delete(root);
     }
 
     r->headers_out.content_length_n = strlen((char *)buf);
